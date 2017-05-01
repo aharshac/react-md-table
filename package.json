@@ -1,0 +1,49 @@
+{
+  "name": "react-md-table",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "immutability-helper": "^2.2.0",
+    "markdown-table": "^1.1.0",
+    "react": "^15.5.4",
+    "react-bootstrap": "^0.31.0",
+    "react-copy-to-clipboard": "^5.0.0",
+    "react-data-grid": "^2.0.33",
+    "react-data-grid-addons": "^2.0.33",
+    "react-dom": "^15.5.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-config-prometheusresearch": "^0.4.0",
+    "eslint-config-rallycoding": "^3.2.0",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "react-scripts": "0.9.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "description": "[![collaborizm](https://img.shields.io/badge/Collaborizm-sign%20up-brightgreen.svg)](https://www.collaborizm.com)",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aharshac/react-md-table.git"
+  },
+  "keywords": [
+    "React",
+    "Markdown",
+    "Table",
+    "Generator"
+  ],
+  "author": "Harsha Alva",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aharshac/react-md-table/issues"
+  },
+  "homepage": "https://github.com/aharshac/react-md-table#readme"
+}

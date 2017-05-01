@@ -1,0 +1,87 @@
+.App {
+  padding: 30px;
+}
+
+.AppHeader h2{
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  height: 40px;
+}
+
+.AppLogo {
+  animation: AppLogo-spin infinite 20s linear;
+  height: 50px;
+  vertical-align: middle;
+  display: inline;
+}
+
+@keyframes AppLogo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.toolbar {
+  padding: 20px 0 20px 0;
+}
+
+.grid {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+
+.rowIndexCell {
+  font-weight: 700;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently */
+}
+
+.react-grid-Cell:first-child {
+  outline: none;
+  background-color: rgb(249, 249, 249);
+}
+
+.resultContainer {
+  width: 100%;
+  min-height: 40px;
+  border: 2px solid #ddd;
+}
+
+pre {
+  border: none !important;
+}
+
+.codePre {
+  font-family: monospace;
+  background-color: #fff;
+  padding: 10px;
+  line-height: 0;
+  counter-reset: line;
+}
+
+.codeSpan {
+  display: block;
+  line-height: 1.5rem;
+}
+
+.codeSpan:before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  border-right: 2px solid #ddd;
+  padding: 0 .5em;
+  margin-right: .5em;
+  color: #888;
+  width: 40px;
+  text-align: right;
+  -webkit-user-select: none;
+}
+
+.shield {
+  margin-right: 5px;
+}
