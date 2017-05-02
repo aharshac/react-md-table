@@ -110,7 +110,7 @@ export default class App extends Component {
           maxRows={App.SETTINGS.maxRows}
           maxCols={App.SETTINGS.maxCols}
           rows={rowSize}
-          cols={colSize}
+          columns={colSize}
           onOk={this.handleTableNew}
           onCancel={() => this.setNewModalHidden(true)}
           hidden={newModalHidden} />

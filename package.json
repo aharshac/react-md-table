@@ -26,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "serve": "serve -s build -p 3000"
   },
   "description": "[![collaborizm](https://img.shields.io/badge/Collaborizm-sign%20up-brightgreen.svg)](https://www.collaborizm.com)",
   "main": "index.js",
@@ -44,6 +45,5 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/aharshac/react-md-table/issues"
-  },
-  "homepage": "https://github.com/aharshac/react-md-table#readme"
+  }
 }
