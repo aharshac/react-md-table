@@ -30,19 +30,11 @@ export default class GridContextMenu extends Component {
     return (
       <ContextMenu>
 
-        <MenuItem
-          data={data}
-          onClick={this.props.onCellEdit}>
-            Edit Cell
-        </MenuItem>
+        <MenuItem data={data} onClick={this.props.onCellEdit}> Edit Cell </MenuItem>
 
         <MenuItem divider onClick={() => {}} />
 
-        <MenuItem
-          data={data}
-          onClick={this.props.onRowInsertAbove}>
-            Insert Row Above
-        </MenuItem>
+        <MenuItem data={data} onClick={this.props.onRowInsertAbove}> Insert Row Above </MenuItem>
 
         <MenuItem
           data={data}

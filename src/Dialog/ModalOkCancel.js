@@ -28,7 +28,7 @@ export default class ModalOkCancel extends Component {
     const { txtTitle, children, txtOk, txtCancel, onOk, onCancel, hidden, large } = this.props;
 
     return (
-      <Modal show={!hidden} onHide={() => {if(onCancel) onCancel(); }} bsSize={large ? 'large' : 'small'}>
+      <Modal show={!hidden} onHide={() => { if(onCancel) onCancel(); }} bsSize={large ? 'large' : 'small'}>
         <Modal.Header closeButton>
           <Modal.Title>{txtTitle}</Modal.Title>
         </Modal.Header>

@@ -9,6 +9,7 @@ export default class ModalEditCell extends Component {
     this.state = {
       tempText: props.text,
     };
+    this.getTitle = this.getTitle.bind(this);
     this.doOnOk = this.doOnOk.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
   }
@@ -34,6 +35,11 @@ export default class ModalEditCell extends Component {
     this.setState({ tempText: nextProps.text });
   }
 
+  getTitle() {
+    const { row, column } = this.props;
+    return `Edit cell ${ String.fromCharCode(97 + column - 1).toUpperCase() }${ row + 1 }`;
+  }
+
   handleTextChange(e) {
     this.setState({ tempText: e.target.value });
   }
@@ -50,7 +56,7 @@ export default class ModalEditCell extends Component {
 
     return (
       <ModalOkCancel
-        txtTitle="Edit cell content"
+        txtTitle={this.getTitle()}
         onOk={this.doOnOk}
         onCancel={() => {if(onCancel) onCancel(); }}
         hidden={hidden}

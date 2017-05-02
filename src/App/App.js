@@ -143,10 +143,10 @@ export default class App extends Component {
 
         <p>
           <a href="https://www.collaborizm.com" className="shield">
-            <img src="https://img.shields.io/badge/Collaborizm-sign%20up-brightgreen.svg" alt="Collaborizm" />
+            <img src="https://img.shields.io/badge/Collaborizm-sign%20up-blue.svg" alt="Collaborizm" />
           </a>
           <a href="https://github.com/aharshac/react-md-table" className="shield">
-            <img src="https://img.shields.io/badge/GitHub-src-blue.svg" alt="Collaborizm" />
+            <img src="https://img.shields.io/badge/GitHub-src-orange.svg" alt="Collaborizm" />
           </a>
         </p>
 
