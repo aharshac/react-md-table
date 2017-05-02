@@ -13,6 +13,7 @@ export default class GridContextMenu extends Component {
   }
   */
   static propTypes = {
+    onCellEdit: PropTypes.func.isRequired,
     onRowDelete: PropTypes.func.isRequired,
     onRowInsertAbove: PropTypes.func.isRequired,
     onRowInsertBelow: PropTypes.func.isRequired,
@@ -24,22 +25,33 @@ export default class GridContextMenu extends Component {
   }
 
   render() {
+    const { rowIdx, idx } = this.props;
+    const data = {rowIdx, idx};
     return (
       <ContextMenu>
+
         <MenuItem
-          data={{rowIdx: this.props.rowIdx, idx: this.props.idx}}
+          data={data}
+          onClick={this.props.onCellEdit}>
+            Edit Cell
+        </MenuItem>
+
+        <MenuItem divider onClick={() => {}} />
+
+        <MenuItem
+          data={data}
           onClick={this.props.onRowInsertAbove}>
             Insert Row Above
         </MenuItem>
 
         <MenuItem
-          data={{rowIdx: this.props.rowIdx, idx: this.props.idx}}
+          data={data}
           onClick={this.props.onRowInsertBelow}>
             Insert Row Below
         </MenuItem>
 
         <MenuItem
-          data={{rowIdx: this.props.rowIdx, idx: this.props.idx}}
+          data={data}
           onClick={this.props.onRowDelete}>
             Delete Row
         </MenuItem>
@@ -47,19 +59,19 @@ export default class GridContextMenu extends Component {
         <MenuItem divider onClick={() => {}} />
 
         <MenuItem
-          data={{rowIdx: this.props.rowIdx, idx: this.props.idx}}
+          data={data}
           onClick={this.props.onColInsertLeft}>
             Insert Column Left
         </MenuItem>
 
         <MenuItem
-          data={{rowIdx: this.props.rowIdx, idx: this.props.idx}}
+          data={data}
           onClick={this.props.onColInsertRight}>
             Insert Column Right
         </MenuItem>
 
         <MenuItem
-          data={{rowIdx: this.props.rowIdx, idx: this.props.idx}}
+          data={data}
           onClick={this.props.onColDelete}>
             Delete Column
         </MenuItem>

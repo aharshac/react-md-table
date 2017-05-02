@@ -31,7 +31,7 @@
 }
 
 
-.rowIndexCell {
+.rowIndexCell, .codePre > .codeSpan {
   font-weight: 700;
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -84,4 +84,10 @@ pre {
 
 .shield {
   margin-right: 5px;
+}
+
+.cellEdit {
+  resize: vertical;
+  width: 100%;
+  min-height: 200px;
 }

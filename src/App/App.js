@@ -7,40 +7,68 @@ import Grid from '../Grid/Grid';
 import ModalOkCancel from '../Dialog/ModalOkCancel';
 import ModalAlert from '../Dialog/ModalAlert';
 import ModalNewTable from '../Dialog/ModalNewTable';
+import ModalEditCell from '../Dialog/ModalEditCell';
+import { saveAppState, loadAppState, clearAppState } from '../Storage';
+
 import logo from './logo.svg';
 
 import './App.css';
 import './contextMenu.css';
 
 export default class App extends Component {
+  static SETTINGS = {
+    maxRows: 30,
+    maxCols: 10
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       rowSize: 2,
       colSize: 2,
       result: '',
+      editRow: null,
+      editCol: null,
+      editText: '',
       newModalHidden: true,
+      editCellHidden: true,
       clearModalHidden: true,
       copyModalHidden: true,
       limitModalHidden: true,
     };
 
     this.handleTableNew = this.handleTableNew.bind(this);
+    this.handleCellEdit = this.handleCellEdit.bind(this);
+    this.handleCellEditDone = this.handleCellEditDone.bind(this);
     this.clearRows = this.clearRows.bind(this);
     this.generateMarkdown = this.generateMarkdown.bind(this);
 
     this.setNewModalHidden = this.setNewModalHidden.bind(this);
+    this.setEditCellHidden = this.setEditCellHidden.bind(this);
     this.setClearModalHidden = this.setClearModalHidden.bind(this);
     this.setCopyModalHidden = this.setCopyModalHidden.bind(this);
     this.setLimitModalHidden = this.setLimitModalHidden.bind(this);
   }
 
-  static SETTINGS = {
-    maxRows: 30,
-    maxCols: 10
+  componentDidMount() {
+    const appState = loadAppState();
+    if (appState) {
+      const { rowSize, colSize } = appState;
+      if (rowSize && rowSize) {
+        this.setState({ rowSize, colSize });
+        return;
+      }
+    }
+  }
+
+  componentDidUpdate() {
+    const { rowSize, colSize } = this.state;
+    saveAppState({ rowSize, colSize });
   }
 
   setNewModalHidden(newModalHidden = true) { this.setState({ newModalHidden }); }
+
+  setEditCellHidden(editCellHidden = true) { this.setState({ editCellHidden }); }
 
   setClearModalHidden(clearModalHidden = true) { this.setState({ clearModalHidden }); }
 
@@ -49,8 +77,21 @@ export default class App extends Component {
   setLimitModalHidden(limitModalHidden = true) { this.setState({ limitModalHidden }); }
 
   handleTableNew(rowSize, colSize) {
-    this.grid.clearTable();
-    this.setState({ result: '', rowSize: parseInt(rowSize, 10), colSize: parseInt(colSize, 10), newModalHidden: true });
+    clearAppState();
+    //this.grid.clearTable();
+    rowSize = parseInt(rowSize, 10);
+    colSize = parseInt(colSize, 10);
+    this.grid.updateGrid(rowSize, colSize);
+    this.setState({ result: '', rowSize, colSize, newModalHidden: true });
+  }
+
+  handleCellEdit(row, column, text) {
+    this.setState({ editRow: parseInt(row, 10), editCol: parseInt(column, 10), editText: text, editCellHidden: false });
+  }
+
+  handleCellEditDone(row, column, text) {
+    this.grid.updateEditedCell(row, column, text);
+    this.setState({ editRow: null, editCol: null, editText: '', editCellHidden: true });
   }
 
   clearRows() {
@@ -87,7 +128,11 @@ export default class App extends Component {
   }
 
   render() {
-    const { result, newModalHidden, clearModalHidden, copyModalHidden, limitModalHidden, rowSize, colSize } = this.state;
+    const {
+      result, rowSize, colSize,
+      editCellHidden, newModalHidden, clearModalHidden, copyModalHidden, limitModalHidden,
+      editRow, editCol, editText
+    } = this.state;
 
     return (
       <div className="App">
@@ -95,7 +140,6 @@ export default class App extends Component {
           <h2>React Markdown Table Generator</h2>
           <img src={logo} className="AppLogo" alt="logo" />
         </div>
-
 
         <p>
           <a href="https://www.collaborizm.com" className="shield">
@@ -114,6 +158,14 @@ export default class App extends Component {
           onOk={this.handleTableNew}
           onCancel={() => this.setNewModalHidden(true)}
           hidden={newModalHidden} />
+
+        <ModalEditCell
+          row={editRow}
+          column={editCol}
+          text={editText}
+          onOk={this.handleCellEditDone}
+          onCancel={() => this.setEditCellHidden(true)}
+          hidden={editCellHidden} />
 
         <ModalOkCancel
           txtTitle="Confirm delete"
@@ -152,6 +204,7 @@ export default class App extends Component {
             rowSize={rowSize}
             colSize={colSize}
             onLimitCrossed={() => this.setLimitModalHidden(false)}
+            onCellDoubleClick={this.handleCellEdit}
           />
         </div>
 
