@@ -28,7 +28,7 @@ export default class Grid extends Component {
     this.state = {
       rows: [],
       columns: [],
-      lastKey: 1000
+      lastColKey: 1000
     };
 
     this.loadSavedState = this.loadSavedState.bind(this);
@@ -89,12 +89,12 @@ export default class Grid extends Component {
     const { rowSize, colSize } = this.props;
     const gridState = loadGridState();
     if (gridState) {
-      const { rows, columns, lastKey } = gridState;
-      if (rows && columns && lastKey) {
+      const { rows, columns, lastColKey } = gridState;
+      if (rows && columns && lastColKey) {
         this.setState({
           rows: this.replaceRowHeaders(rows),
           columns: this.replaceColumnHeaders(columns),
-          lastKey
+          lastColKey
         });
         return;
       }
@@ -141,6 +141,30 @@ export default class Grid extends Component {
       });
     }
     columns = this.replaceColumnHeaders(columns);
+    this.setState({ rows, columns });
+  }
+
+  importGrid(rowSize, colSize, matrix) {
+    let rows = this.clearRows(rowSize);
+    let columns = [{ key: 'ID', name: '', width: 50, editable: false, formatter: NumberCellRenderer }];
+    for (let i = 1; i < colSize + 1; i++) {
+      columns.push({
+        key: 'col' + i.toString(),
+        name: 'A', width: null,
+        editable: true,
+        events: {
+          onDoubleClick: this.handleCellDoubleClick
+        }
+      });
+    }
+    columns = this.replaceColumnHeaders(columns);
+    for(let row = 0; row < rows.length; row++) {
+      for(let col = 1; col < columns.length; col++) {
+        const key = columns[col].key;
+        rows[row][key] = matrix[row][col-1];
+      }
+    }
+
     this.setState({ rows, columns });
   }
 
@@ -208,21 +232,6 @@ export default class Grid extends Component {
     return this.state.rows[rowIdx];
   }
 
-  deleteRow(e, { rowIdx }) {
-    let rows = [...this.state.rows];
-    if (rows.length === 1) {
-      return;
-    }
-
-    rows.splice(rowIdx, 1);
-    rows = this.replaceRowHeaders(rows);
-
-    let columns = [...this.state.columns];
-    columns = this.replaceColumnHeaders(columns);
-
-    this.setState({ rows, columns });
-  }
-
   insertRowAbove(e, { rowIdx }) {
     this.insertRow(rowIdx);
   }
@@ -234,8 +243,8 @@ export default class Grid extends Component {
   insertRow(rowIdx) {
     const length = this.state.rows.length;
     const { onLimitCrossed } = this.props;
-    if (length > this.props.maxRows) {
-      if (onLimitCrossed) onLimitCrossed();
+    if (length > this.props.maxRows && onLimitCrossed) {
+      onLimitCrossed();
       return;
     }
 
@@ -248,6 +257,23 @@ export default class Grid extends Component {
     columns = this.replaceColumnHeaders(columns);
 
     this.setState({ columns, rows });
+  }
+
+  deleteRow(e, { rowIdx }) {
+    let rows = [...this.state.rows];
+    const { onLimitCrossed } = this.props;
+    if (rows.length === 1 && onLimitCrossed) {
+      onLimitCrossed();
+      return;
+    }
+
+    rows.splice(rowIdx, 1);
+    rows = this.replaceRowHeaders(rows);
+
+    let columns = [...this.state.columns];
+    columns = this.replaceColumnHeaders(columns);
+
+    this.setState({ rows, columns });
   }
 
 
@@ -267,12 +293,12 @@ export default class Grid extends Component {
   insertCol(colIdx) {
     const length = this.state.columns.length;
     const { onLimitCrossed } = this.props;
-    if (length > this.props.maxCols) {
-      if (onLimitCrossed) onLimitCrossed();
+    if (length > this.props.maxCols && onLimitCrossed) {
+      onLimitCrossed();
       return;
     }
-    const lastKey = ++this.state.lastKey;
-    const key = lastKey.toString();
+    const lastColKey = ++this.state.lastColKey;
+    const key = lastColKey.toString();
 
     const newCol = { key: 'col' + key, name: key, width: null, editable: true };
 
@@ -282,12 +308,17 @@ export default class Grid extends Component {
 
     let rows = [...this.state.rows];
     rows = this.replaceRowHeaders(rows);
-    this.setState({ columns, rows, lastKey: lastKey });
+    this.setState({ columns, rows, lastColKey: lastColKey });
   }
 
   deleteCol(e, { idx }) {
     let columns = [...this.state.columns];
-    if (idx === 0 || columns.length <= 2) {
+    const { onLimitCrossed } = this.props;
+    if (idx === 0) {
+      return;
+    }
+    if (columns.length === 2 && onLimitCrossed) {
+      onLimitCrossed();
       return;
     }
 

@@ -7,7 +7,9 @@ import Grid from '../Grid/Grid';
 import ModalOkCancel from '../Dialog/ModalOkCancel';
 import ModalAlert from '../Dialog/ModalAlert';
 import ModalNewTable from '../Dialog/ModalNewTable';
+import ModalImportTable from '../Dialog/ModalImportTable';
 import ModalEditCell from '../Dialog/ModalEditCell';
+import Importer from '../Importer';
 import { saveAppState, loadAppState, clearAppState } from '../Storage';
 
 import logo from './logo.svg';
@@ -30,51 +32,54 @@ export default class App extends Component {
       editRow: null,
       editCol: null,
       editText: '',
+      importText: '',
+      alert: '',
       newModalHidden: true,
+      importModalHidden: true,
       editCellHidden: true,
       clearModalHidden: true,
-      copyModalHidden: true,
-      limitModalHidden: true,
+      alertModalHidden: true,
     };
 
     this.handleTableNew = this.handleTableNew.bind(this);
+    this.handleTableImport = this.handleTableImport.bind(this);
     this.handleCellEdit = this.handleCellEdit.bind(this);
     this.handleCellEditDone = this.handleCellEditDone.bind(this);
     this.clearRows = this.clearRows.bind(this);
     this.generateMarkdown = this.generateMarkdown.bind(this);
 
     this.setNewModalHidden = this.setNewModalHidden.bind(this);
+    this.setImportModalHidden = this.setImportModalHidden.bind(this);
     this.setEditCellHidden = this.setEditCellHidden.bind(this);
     this.setClearModalHidden = this.setClearModalHidden.bind(this);
-    this.setCopyModalHidden = this.setCopyModalHidden.bind(this);
-    this.setLimitModalHidden = this.setLimitModalHidden.bind(this);
+    this.setAlertModalHidden = this.setAlertModalHidden.bind(this);
   }
 
   componentDidMount() {
     const appState = loadAppState();
     if (appState) {
-      const { rowSize, colSize } = appState;
+      const { rowSize, colSize, importText } = appState;
       if (rowSize && rowSize) {
-        this.setState({ rowSize, colSize });
+        this.setState({ rowSize, colSize, importText });
         return;
       }
     }
   }
 
   componentDidUpdate() {
-    const { rowSize, colSize } = this.state;
-    saveAppState({ rowSize, colSize });
+    const { rowSize, colSize, importText } = this.state;
+    saveAppState({ rowSize, colSize, importText });
   }
 
   setNewModalHidden(newModalHidden = true) { this.setState({ newModalHidden }); }
+
+  setImportModalHidden(importModalHidden = true) { this.setState({ importModalHidden }); }
 
   setEditCellHidden(editCellHidden = true) { this.setState({ editCellHidden }); }
 
   setClearModalHidden(clearModalHidden = true) { this.setState({ clearModalHidden }); }
 
-  setCopyModalHidden(copyModalHidden = true) { this.setState({ copyModalHidden }); }
-
-  setLimitModalHidden(limitModalHidden = true) { this.setState({ limitModalHidden }); }
+  setAlertModalHidden(alertModalHidden, alert = '') {  this.setState({ alertModalHidden, alert }); }
 
   handleTableNew(rowSize, colSize) {
     clearAppState();
@@ -83,6 +88,18 @@ export default class App extends Component {
     colSize = parseInt(colSize, 10);
     this.grid.updateGrid(rowSize, colSize);
     this.setState({ result: '', rowSize, colSize, newModalHidden: true });
+  }
+
+  handleTableImport(text) {
+    const data = Importer.tableToArray(text);
+    if (!data) {
+      this.setState({ importText: text, importModalHidden: true, alertModalHidden: false, alert: 'Could not import invalid table.' });
+    } else {
+      const { matrix, rowSize, colSize } = data;
+      clearAppState();
+      this.grid.updateGrid(rowSize, colSize, matrix);
+      this.setState({ result: '', importModalHidden: true, importText: text, rowSize, colSize, alertModalHidden: true, alert: '' });
+    }
   }
 
   handleCellEdit(row, column, text) {
@@ -121,7 +138,7 @@ export default class App extends Component {
   getCopyButton(result) {
     if (!result) return null;
     return(
-      <CopyToClipboard text={result} onCopy={() => this.setCopyModalHidden(false)}>
+      <CopyToClipboard text={result} onCopy={() => this.setAlertModalHidden(false, 'Output is copied to the clipboard.')}>
         <Button bsStyle="info"><b>Copy</b></Button>
       </CopyToClipboard>
     );
@@ -130,7 +147,7 @@ export default class App extends Component {
   render() {
     const {
       result, rowSize, colSize,
-      editCellHidden, newModalHidden, clearModalHidden, copyModalHidden, limitModalHidden,
+      newModalHidden, importModalHidden, editCellHidden, clearModalHidden, alertModalHidden, alert,
       editRow, editCol, editText
     } = this.state;
 
@@ -159,6 +176,12 @@ export default class App extends Component {
           onCancel={() => this.setNewModalHidden(true)}
           hidden={newModalHidden} />
 
+        <ModalImportTable
+          text=""
+          onOk={this.handleTableImport}
+          onCancel={() => this.setImportModalHidden(true)}
+          hidden={importModalHidden} />
+
         <ModalEditCell
           row={editRow}
           column={editCol}
@@ -175,24 +198,15 @@ export default class App extends Component {
             This action cannot be undone.
         </ModalOkCancel>
 
-
         <ModalAlert
-          onOk={() => this.setCopyModalHidden(true)}
-          hidden={copyModalHidden}
-        >
-          Output is copied to the clipboard.
-        </ModalAlert>
-
-        <ModalAlert
-          onOk={() => this.setLimitModalHidden(true)}
-          hidden={limitModalHidden}
-          hideOkButton
-        >
-          Limit reached.
-        </ModalAlert>
+          onOk={() => this.setAlertModalHidden(true)}
+          message={alert}
+          hidden={alertModalHidden}
+          hideOkButton />
 
         <ButtonToolbar className="toolbar">
           <Button bsStyle="primary" onClick={() => this.setNewModalHidden(false)}><b>New Table</b></Button>
+          <Button bsStyle="primary" onClick={() => this.setImportModalHidden(false)}><b>Import Table</b></Button>
           <Button bsStyle="danger" onClick={() => this.setClearModalHidden(false)}><b>Clear Rows</b></Button>
         </ButtonToolbar>
 
@@ -203,7 +217,7 @@ export default class App extends Component {
             maxCols={App.SETTINGS.maxCols}
             rowSize={rowSize}
             colSize={colSize}
-            onLimitCrossed={() => this.setLimitModalHidden(false)}
+            onLimitCrossed={() => this.setAlertModalHidden(false, 'Limit reached.')}
             onCellDoubleClick={this.handleCellEdit}
           />
         </div>

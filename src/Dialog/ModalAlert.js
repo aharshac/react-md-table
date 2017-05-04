@@ -4,10 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 
 export default class ModalAlert extends Component {
   static propTypes = {
-    children: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.string
-    ]).isRequired,
+    message: PropTypes.string,
     txtOk: PropTypes.string,
     onOk: PropTypes.func.isRequired,
     hidden: PropTypes.bool,
@@ -16,17 +13,18 @@ export default class ModalAlert extends Component {
 
   static defaultProps = {
     txtOk: 'Ok',
+    title: '',
     hidden: true,
     hideOkButton: false
   }
 
   render() {
-    const {  children, txtOk,  onOk, hidden, hideOkButton } = this.props;
+    const {  message, txtOk,  onOk, hidden, hideOkButton } = this.props;
 
     return (
       <Modal show={!hidden} onHide={() => {if(onOk) onOk(); }}>
         <Modal.Body>
-          {children}
+          { message }
         </Modal.Body>
         { !hideOkButton ?
           <Modal.Footer>

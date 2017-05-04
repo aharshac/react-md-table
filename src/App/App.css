@@ -86,7 +86,7 @@ pre {
   margin-right: 5px;
 }
 
-.cellEdit {
+.cellEdit, .importEdit {
   resize: vertical;
   width: 100%;
   min-height: 200px;
