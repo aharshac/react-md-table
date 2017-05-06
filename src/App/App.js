@@ -97,7 +97,7 @@ export default class App extends Component {
     } else {
       const { matrix, rowSize, colSize } = data;
       clearAppState();
-      this.grid.updateGrid(rowSize, colSize, matrix);
+      this.grid.importGrid(rowSize, colSize, matrix);
       this.setState({ result: '', importModalHidden: true, importText: text, rowSize, colSize, alertModalHidden: true, alert: '' });
     }
   }
@@ -139,7 +139,7 @@ export default class App extends Component {
     if (!result) return null;
     return(
       <CopyToClipboard text={result} onCopy={() => this.setAlertModalHidden(false, 'Output is copied to the clipboard.')}>
-        <Button bsStyle="info"><b>Copy</b></Button>
+        <Button bsStyle="default"><b>Copy</b></Button>
       </CopyToClipboard>
     );
   }
@@ -148,7 +148,7 @@ export default class App extends Component {
     const {
       result, rowSize, colSize,
       newModalHidden, importModalHidden, editCellHidden, clearModalHidden, alertModalHidden, alert,
-      editRow, editCol, editText
+      editRow, editCol, editText, importText
     } = this.state;
 
     return (
@@ -177,7 +177,7 @@ export default class App extends Component {
           hidden={newModalHidden} />
 
         <ModalImportTable
-          text=""
+          text={importText}
           onOk={this.handleTableImport}
           onCancel={() => this.setImportModalHidden(true)}
           hidden={importModalHidden} />
@@ -206,7 +206,7 @@ export default class App extends Component {
 
         <ButtonToolbar className="toolbar">
           <Button bsStyle="primary" onClick={() => this.setNewModalHidden(false)}><b>New Table</b></Button>
-          <Button bsStyle="primary" onClick={() => this.setImportModalHidden(false)}><b>Import Table</b></Button>
+          <Button bsStyle="info" onClick={() => this.setImportModalHidden(false)}><b>Import Table</b></Button>
           <Button bsStyle="danger" onClick={() => this.setClearModalHidden(false)}><b>Clear Rows</b></Button>
         </ButtonToolbar>
 
@@ -218,7 +218,7 @@ export default class App extends Component {
             rowSize={rowSize}
             colSize={colSize}
             onLimitCrossed={() => this.setAlertModalHidden(false, 'Limit reached.')}
-            onCellDoubleClick={this.handleCellEdit}
+            onCellEditAction={this.handleCellEdit}
           />
         </div>
 

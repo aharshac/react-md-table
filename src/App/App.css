@@ -9,6 +9,7 @@
   height: 40px;
 }
 
+/* logo */
 .AppLogo {
   animation: AppLogo-spin infinite 20s linear;
   height: 50px;
@@ -21,24 +22,31 @@
   to { transform: rotate(360deg); }
 }
 
+
 .toolbar {
   padding: 20px 0 20px 0;
 }
 
+/* grid */
 .grid {
   padding-left: 0px;
   padding-right: 0px;
 }
 
-
-.rowIndexCell, .codePre > .codeSpan {
-  font-weight: 700;
+/* Custom cell formatters */
+.rowIndexCell, .longTextCell span, .codePre > .codeSpan {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */
        -moz-user-select: none; /* Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently */
+  cursor: default;
+}
+
+/* Index column */
+.rowIndexCell {
+  font-weight: 700 !important;
 }
 
 .react-grid-Cell:first-child {
@@ -46,6 +54,21 @@
   background-color: rgb(249, 249, 249);
 }
 
+.longTextCell span {
+  color: #000;
+  font-weight: normal;
+}
+
+.longTextCell {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 700;
+  color: red;
+}
+
+
+/* Code block */
 .resultContainer {
   width: 100%;
   min-height: 40px;
@@ -67,6 +90,7 @@ pre {
 .codeSpan {
   display: block;
   line-height: 1.5rem;
+  padding-right: 5px;
 }
 
 .codeSpan:before {
@@ -82,10 +106,14 @@ pre {
   -webkit-user-select: none;
 }
 
+
+/* GitHub shields */
 .shield {
   margin-right: 5px;
 }
 
+
+/* Textareas */
 .cellEdit, .importEdit {
   resize: vertical;
   width: 100%;

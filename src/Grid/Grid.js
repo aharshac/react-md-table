@@ -3,23 +3,11 @@ import PropTypes from 'prop-types';
 import ReactDataGrid from 'react-data-grid';
 import update from 'immutability-helper';
 
+import IndexColFormatter from './IndexColFormatter';
+import LongTextFormatter from './LongTextFormatter';
 import GridContextMenu from './GridContextMenu';
 import { saveGridState, loadGridState } from '../Storage';
 
-class NumberCellRenderer extends Component {
-  static propTypes = {
-    value: PropTypes.number.isRequired,
-  }
-
-  render() {
-    const { value } = this.props;
-    return (
-      <div className="rowIndexCell" >
-        { value }
-      </div>
-    );
-  }
-}
 
 export default class Grid extends Component {
   constructor(props) {
@@ -32,7 +20,8 @@ export default class Grid extends Component {
     };
 
     this.loadSavedState = this.loadSavedState.bind(this);
-    this.handleCellDoubleClick = this.handleCellDoubleClick.bind(this);
+    this.handleCellKeydown = this.handleCellKeydown.bind(this);
+    this.handleCellEditAction = this.handleCellEditAction.bind(this);
     this.updateEditedCell = this.updateEditedCell.bind(this);
     this.updateGrid = this.updateGrid.bind(this);
     this.clearTable = this.clearTable.bind(this);
@@ -57,7 +46,7 @@ export default class Grid extends Component {
     rowSize: PropTypes.number,
     colSize: PropTypes.number,
     onLimitCrossed: PropTypes.func,
-    onCellDoubleClick: PropTypes.func,
+    onCellEditAction: PropTypes.func,
   }
 
   static defaultProps = {
@@ -70,16 +59,6 @@ export default class Grid extends Component {
   componentDidMount() {
     this.loadSavedState();
   }
-
-  /*
-  componentWillReceiveProps(nextProps) {
-    const { rowSize, colSize } = this.props;
-    if (nextProps.rowSize === rowSize && nextProps.colSize === colSize) {
-      return;
-    }
-    //this.loadSavedState();
-    //this.updateGrid(nextProps.rowSize, nextProps.colSize);
-  }*/
 
   componentDidUpdate() {
     saveGridState(this.state);
@@ -102,13 +81,20 @@ export default class Grid extends Component {
     this.updateGrid(rowSize, colSize);
   }
 
-  handleCellDoubleClick(ev, { rowIdx, idx }) {
+  /* Cell popout */
+  handleCellKeydown(ev, args) {
+    if (ev.key === 'Enter') {
+      this.handleCellEditAction(ev, args);
+    }
+  }
+
+  handleCellEditAction(ev, { rowIdx, idx }) {
     if (idx === 0) return;
     const { rows, columns } = this.state;
     const key = columns[idx].key;
     const text = rows[rowIdx][key];
-    const { onCellDoubleClick } = this.props;
-    if(onCellDoubleClick) onCellDoubleClick(rowIdx, idx, text);
+    const { onCellEditAction } = this.props;
+    if(onCellEditAction) onCellEditAction(rowIdx, idx, text);
   }
 
   updateEditedCell(row, column, text) {
@@ -126,36 +112,37 @@ export default class Grid extends Component {
     this.setState({ rows: newData });
   }
 
+  /* Col object */
+  getColumnObject(i) {
+    if (i === 0 ) return { key: 'ID', name: '', width: 50, editable: false, formatter: IndexColFormatter };
+
+    return {
+      key: 'col' + i.toString(),
+      name:  String.fromCharCode(97 + i - 1).toUpperCase(),
+      width: 150,
+      editable: false,
+      formatter: LongTextFormatter,
+      events: {  onDoubleClick: this.handleCellEditAction, onKeyDown: this.handleCellKeydown }
+    };
+  }
+
   /* Table resizing */
   updateGrid(rowSize, colSize) {
     let rows = this.clearRows(rowSize);
-    let columns = [{ key: 'ID', name: '', width: 50, editable: false, formatter: NumberCellRenderer }];
+    let columns = [this.getColumnObject(0)];
     for (let i = 1; i < colSize + 1; i++) {
-      columns.push({
-        key: 'col' + i.toString(),
-        name: 'A', width: null,
-        editable: true,
-        events: {
-          onDoubleClick: this.handleCellDoubleClick
-        }
-      });
+      columns.push(this.getColumnObject(i));
     }
     columns = this.replaceColumnHeaders(columns);
     this.setState({ rows, columns });
   }
 
+  /* Import from MD */
   importGrid(rowSize, colSize, matrix) {
     let rows = this.clearRows(rowSize);
-    let columns = [{ key: 'ID', name: '', width: 50, editable: false, formatter: NumberCellRenderer }];
+    let columns = [this.getColumnObject(0)];
     for (let i = 1; i < colSize + 1; i++) {
-      columns.push({
-        key: 'col' + i.toString(),
-        name: 'A', width: null,
-        editable: true,
-        events: {
-          onDoubleClick: this.handleCellDoubleClick
-        }
-      });
+      columns.push(this.getColumnObject(i));
     }
     columns = this.replaceColumnHeaders(columns);
     for(let row = 0; row < rows.length; row++) {
@@ -210,9 +197,9 @@ export default class Grid extends Component {
   /* Row and col headers */
 
   replaceColumnHeaders(columns) {
+    columns[0] = this.getColumnObject(0);
     for (let i = 1; i < columns.length; i++) {
-      columns[i].name = String.fromCharCode(97 + i - 1).toUpperCase();
-      columns[i].events = { onDoubleClick: this.handleCellDoubleClick };
+      columns[i] = this.getColumnObject(i);
     }
     return columns;
   }
@@ -348,7 +335,7 @@ export default class Grid extends Component {
       <ReactDataGrid
         contextMenu={
           <GridContextMenu
-            onCellEdit={this.handleCellDoubleClick}
+            onCellEdit={this.handleCellEditAction}
             onRowDelete={this.deleteRow}
             onRowInsertAbove={this.insertRowAbove}
             onRowInsertBelow={this.insertRowBelow}
@@ -360,7 +347,7 @@ export default class Grid extends Component {
         columns={columns}
         rowGetter={this.rowGetter}
         rowsCount={rows.length}
-        minHeight={300}
+        minHeight={400}
         height={null}
         enableCellSelect={true}
         onGridRowsUpdated={this.handleGridRowsUpdated}
