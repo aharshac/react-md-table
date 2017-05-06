@@ -114,7 +114,10 @@ export default class Grid extends Component {
 
   /* Col object */
   getColumnObject(i) {
-    if (i === 0 ) return { key: 'ID', name: '', width: 50, editable: false, formatter: IndexColFormatter };
+    if (i === 0 ) return {
+      key: 'ID', name: '', width: 50, locked: true, cellClass: 'no-outline',
+      editable: false, formatter: IndexColFormatter
+    };
 
     return {
       key: 'col' + i.toString(),

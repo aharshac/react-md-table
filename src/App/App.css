@@ -49,8 +49,8 @@
   font-weight: 700 !important;
 }
 
-.react-grid-Cell:first-child {
-  outline: none;
+.no-outline {
+  outline: none !important;
   background-color: rgb(249, 249, 249);
 }
 
