@@ -22,9 +22,12 @@
   to { transform: rotate(360deg); }
 }
 
-
 .toolbar {
   padding: 20px 0 20px 0;
+}
+
+.align-right {
+  float: right !important;
 }
 
 /* grid */
@@ -88,6 +91,7 @@
   width: 100%;
   min-height: 40px;
   border: 2px solid #ddd;
+  padding: 10px;
 }
 
 pre {
@@ -97,7 +101,8 @@ pre {
 .codePre {
   font-family: monospace;
   background-color: #fff;
-  padding: 10px;
+  padding: 5px 0 10px 0 !important;
+  margin-bottom: 0px;
   line-height: 0;
   counter-reset: line;
 }

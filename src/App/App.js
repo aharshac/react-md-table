@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ButtonToolbar, Button } from 'react-bootstrap';
+import { ButtonToolbar, Button, Glyphicon } from 'react-bootstrap';
 import MdTable from 'markdown-table';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
@@ -9,6 +9,7 @@ import ModalAlert from '../Dialog/ModalAlert';
 import ModalNewTable from '../Dialog/ModalNewTable';
 import ModalImportTable from '../Dialog/ModalImportTable';
 import ModalEditCell from '../Dialog/ModalEditCell';
+import ModalHelp from '../Dialog/ModalHelp';
 import Importer from '../Importer';
 import { saveAppState, loadAppState, clearAppState } from '../Storage';
 
@@ -39,6 +40,7 @@ export default class App extends Component {
       editCellHidden: true,
       clearModalHidden: true,
       alertModalHidden: true,
+      helpModalHidden: true,
     };
 
     this.handleTableNew = this.handleTableNew.bind(this);
@@ -80,6 +82,9 @@ export default class App extends Component {
   setClearModalHidden(clearModalHidden = true) { this.setState({ clearModalHidden }); }
 
   setAlertModalHidden(alertModalHidden, alert = '') {  this.setState({ alertModalHidden, alert }); }
+
+  setHelpModalHidden = (helpModalHidden) => this.setState({ helpModalHidden });
+
 
   handleTableNew(rowSize, colSize) {
     clearAppState();
@@ -140,7 +145,7 @@ export default class App extends Component {
     if (!result) return null;
     return(
       <CopyToClipboard text={result} onCopy={() => this.setAlertModalHidden(false, 'Output is copied to the clipboard.')}>
-        <Button bsStyle="default"><b>Copy</b></Button>
+        <Button bsStyle="default"><Glyphicon glyph="copy" /> <b>Copy Output</b></Button>
       </CopyToClipboard>
     );
   }
@@ -148,7 +153,7 @@ export default class App extends Component {
   render() {
     const {
       result, rowSize, colSize,
-      newModalHidden, importModalHidden, editCellHidden, clearModalHidden, alertModalHidden, alert,
+      newModalHidden, importModalHidden, editCellHidden, clearModalHidden, alertModalHidden, alert, helpModalHidden,
       editRow, editCol, editText, importText
     } = this.state;
 
@@ -160,11 +165,11 @@ export default class App extends Component {
         </div>
 
         <p>
-          <a href="https://www.collaborizm.com" className="shield">
+          <a href="https://www.collaborizm.com" className="shield" target="_blank">
             <img src="https://img.shields.io/badge/Collaborizm-sign%20up-blue.svg" alt="Collaborizm" />
           </a>
-          <a href="https://github.com/aharshac/react-md-table" className="shield">
-            <img src="https://img.shields.io/badge/GitHub-src-orange.svg" alt="Collaborizm" />
+          <a href="https://github.com/aharshac/react-md-table" className="shield" target="_blank">
+            <img src="https://img.shields.io/badge/GitHub-src-orange.svg" alt="Source Code" />
           </a>
         </p>
 
@@ -205,10 +210,15 @@ export default class App extends Component {
           hidden={alertModalHidden}
           hideOkButton />
 
+        <ModalHelp
+          onOk={() => this.setHelpModalHidden(true)}
+          hidden={helpModalHidden} />
+
         <ButtonToolbar className="toolbar">
-          <Button bsStyle="primary" onClick={() => this.setNewModalHidden(false)}><b>New Table</b></Button>
-          <Button bsStyle="info" onClick={() => this.setImportModalHidden(false)}><b>Import Table</b></Button>
-          <Button bsStyle="danger" onClick={() => this.setClearModalHidden(false)}><b>Clear Rows</b></Button>
+          <Button bsStyle="primary" onClick={() => this.setNewModalHidden(false)}><Glyphicon glyph="tasks" /> <b>New Table</b></Button>
+          <Button bsStyle="info" onClick={() => this.setImportModalHidden(false)}><Glyphicon glyph="import" /> <b>Import Table</b></Button>
+          <Button bsStyle="danger" onClick={() => this.setClearModalHidden(false)}><Glyphicon glyph="trash" /> <b>Clear Rows</b></Button>
+          <Button bsStyle="warning" onClick={() => this.setHelpModalHidden(false)} className="align-right"><Glyphicon glyph="question-sign" /> <b>Help</b></Button>
         </ButtonToolbar>
 
         <div className="grid">
@@ -224,7 +234,7 @@ export default class App extends Component {
         </div>
 
         <ButtonToolbar className="toolbar">
-          <Button bsStyle="success" onClick={this.generateMarkdown}><b>Generate Markdown</b></Button>
+          <Button bsStyle="success" onClick={this.generateMarkdown}><Glyphicon glyph="check" /> <b>Generate Markdown</b></Button>
           { this.getCopyButton(result) }
         </ButtonToolbar>
 
