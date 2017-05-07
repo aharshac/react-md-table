@@ -33,6 +33,21 @@
   padding-right: 0px;
 }
 
+.headerAlignContainer {
+  position: relative;
+}
+
+.headerAlignText{
+  display: inline-block;
+}
+
+.headerAlign {
+  font-weight: normal;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 /* Custom cell formatters */
 .rowIndexCell, .longTextCell span, .codePre > .codeSpan {
   -webkit-touch-callout: none; /* iOS Safari */

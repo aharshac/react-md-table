@@ -95,9 +95,9 @@ export default class App extends Component {
     if (!data) {
       this.setState({ importText: text, importModalHidden: true, alertModalHidden: false, alert: 'Could not import invalid table.' });
     } else {
-      const { matrix, rowSize, colSize } = data;
+      const { matrix, rowSize, colSize, styles } = data;
       clearAppState();
-      this.grid.importGrid(rowSize, colSize, matrix);
+      this.grid.importGrid(rowSize, colSize, matrix, styles);
       this.setState({ result: '', importModalHidden: true, importText: text, rowSize, colSize, alertModalHidden: true, alert: '' });
     }
   }
@@ -117,9 +117,10 @@ export default class App extends Component {
   }
 
   generateMarkdown() {
-    const table = this.grid.getTableRows();
-    const md = MdTable(table);
-    this.setState({ result: md });
+    this.grid.getTableRows((table, align) => {
+      const md = MdTable(table, { align });
+      this.setState({ result: md });
+    });
   }
 
   getHtmlOutput(result) {

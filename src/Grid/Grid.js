@@ -6,6 +6,7 @@ import update from 'immutability-helper';
 import IndexColFormatter from './IndexColFormatter';
 import LongTextFormatter from './LongTextFormatter';
 import GridContextMenu from './GridContextMenu';
+import AlignHeaderRenderer from './AlignHeaderRenderer';
 import { saveGridState, loadGridState } from '../Storage';
 
 
@@ -16,6 +17,7 @@ export default class Grid extends Component {
     this.state = {
       rows: [],
       columns: [],
+      columnStyles: {},
       lastColKey: 1000
     };
 
@@ -23,6 +25,8 @@ export default class Grid extends Component {
     this.handleCellKeydown = this.handleCellKeydown.bind(this);
     this.handleCellEditAction = this.handleCellEditAction.bind(this);
     this.updateEditedCell = this.updateEditedCell.bind(this);
+    this.handleColumnStylesChange = this.handleColumnStylesChange.bind(this);
+    this.getColumnObject = this.getColumnObject.bind(this);
     this.updateGrid = this.updateGrid.bind(this);
     this.clearTable = this.clearTable.bind(this);
     this.getTableRows = this.getTableRows.bind(this);
@@ -68,11 +72,12 @@ export default class Grid extends Component {
     const { rowSize, colSize } = this.props;
     const gridState = loadGridState();
     if (gridState) {
-      const { rows, columns, lastColKey } = gridState;
-      if (rows && columns && lastColKey) {
+      const { rows, columns, lastColKey, columnStyles } = gridState;
+      if (rows && columns && lastColKey && columnStyles) {
         this.setState({
           rows: this.replaceRowHeaders(rows),
           columns: this.replaceColumnHeaders(columns),
+          columnStyles,
           lastColKey
         });
         return;
@@ -105,28 +110,42 @@ export default class Grid extends Component {
     const key = columns[column].key;
     currentRow[key] = text;
 
-    let newData = update(rows, {
-      $splice: [[row, 1, currentRow]]
-    });
-
+    let newData = update(rows, { $splice: [[row, 1, currentRow]] });
     this.setState({ rows: newData });
   }
 
-  /* Col object */
-  getColumnObject(i) {
+  handleColumnStylesChange(key, align) {
+    const columns = this.state.columns.slice();
+    const idx = columns.findIndex(element => { return element.key === key; });
+    if (idx <= 0) return;
+
+    const { columnStyles } = this.state;
+    let newColumnStyles = update(columnStyles, { $merge: { [key]: align } });
+
+    const currentColumn = columns[idx];
+    //currentColumn.align = align;
+    let newColumns = update(columns, { $splice: [[idx, 1, this.getColumnObject(currentColumn.radix, align)]] });
+    this.setState({ columns: newColumns, columnStyles: newColumnStyles });
+  }
+
+  getColumnObject(i, align = null) {
     if (i === 0 ) return {
       key: 'ID', name: '', width: 50, locked: true, cellClass: 'no-outline',
       editable: false, formatter: IndexColFormatter
     };
 
-    return {
+    const obj = {
       key: 'col' + i.toString(),
+      radix: i,
       name:  String.fromCharCode(97 + i - 1).toUpperCase(),
       width: 150,
       editable: false,
       formatter: LongTextFormatter,
+      headerRenderer: <AlignHeaderRenderer onChange={this.handleColumnStylesChange} />,
       events: {  onDoubleClick: this.handleCellEditAction, onKeyDown: this.handleCellKeydown }
     };
+    if(align) obj.align = align;
+    return obj;
   }
 
   /* Table resizing */
@@ -134,20 +153,24 @@ export default class Grid extends Component {
     let rows = this.clearRows(rowSize);
     let columns = [this.getColumnObject(0)];
     for (let i = 1; i < colSize + 1; i++) {
-      columns.push(this.getColumnObject(i));
+      const column = this.getColumnObject(i, 'l');
+      columns.push(column);
     }
-    columns = this.replaceColumnHeaders(columns);
-    this.setState({ rows, columns });
+    //columns = this.replaceColumnHeaders(columns);
+    this.setState({ rows, columns, columnStyles: {} });
   }
 
   /* Import from MD */
-  importGrid(rowSize, colSize, matrix) {
+  importGrid(rowSize, colSize, matrix, styles) {
+    let columnStyles = {};
     let rows = this.clearRows(rowSize);
     let columns = [this.getColumnObject(0)];
     for (let i = 1; i < colSize + 1; i++) {
-      columns.push(this.getColumnObject(i));
+      const column = this.getColumnObject(i, styles[i-1]);
+      columnStyles[column.key] = styles[i-1];
+      columns.push(column);
     }
-    columns = this.replaceColumnHeaders(columns);
+    //columns = this.replaceColumnHeaders(columns);
     for(let row = 0; row < rows.length; row++) {
       for(let col = 1; col < columns.length; col++) {
         const key = columns[col].key;
@@ -176,12 +199,13 @@ export default class Grid extends Component {
 
 
   /* Non header rows */
-  getTableRows() {
+  getTableRows(onComplete = null) {
     const { rows, columns } = this.state;
 
-    let keys = [], table = [];
+    let keys = [], table = [], align = [];
     for(let col = 1; col < columns.length; col++) {
       keys.push(columns[col].key);
+      align.push(columns[col].align ? columns[col].align : 'l');
     }
 
     for(let row = 0; row < rows.length; row++) {
@@ -193,7 +217,8 @@ export default class Grid extends Component {
       table.push(tableRow);
     }
 
-    return table;
+    if (onComplete) onComplete(table, align);
+    //return table;
   }
 
 
@@ -202,7 +227,12 @@ export default class Grid extends Component {
   replaceColumnHeaders(columns) {
     columns[0] = this.getColumnObject(0);
     for (let i = 1; i < columns.length; i++) {
-      columns[i] = this.getColumnObject(i);
+      // const key = columns[i].key;
+      columns[i].name = String.fromCharCode(97 + i - 1).toUpperCase();
+      columns[i].formatter = LongTextFormatter;
+      columns[i].headerRenderer = <AlignHeaderRenderer onChange={this.handleColumnStylesChange} />;
+      columns[i].events = {  onDoubleClick: this.handleCellEditAction, onKeyDown: this.handleCellKeydown };
+      // columns[i].align = style;
     }
     return columns;
   }
@@ -288,17 +318,14 @@ export default class Grid extends Component {
       return;
     }
     const lastColKey = ++this.state.lastColKey;
-    const key = lastColKey.toString();
-
-    const newCol = { key: 'col' + key, name: key, width: null, editable: true };
+    const newCol = this.getColumnObject(lastColKey);
 
     let columns = [...this.state.columns];
+    let rows = [...this.state.rows];
     columns.splice(colIdx, 0, newCol);
     columns = this.replaceColumnHeaders(columns);
-
-    let rows = [...this.state.rows];
     rows = this.replaceRowHeaders(rows);
-    this.setState({ columns, rows, lastColKey: lastColKey });
+    this.setState({ columns, rows, lastColKey });
   }
 
   deleteCol(e, { idx }) {
@@ -316,7 +343,6 @@ export default class Grid extends Component {
     columns = this.replaceColumnHeaders(columns);
     let rows = [...this.state.rows];
     rows = this.replaceRowHeaders(rows);
-
     this.setState({ columns, rows });
   }
 
