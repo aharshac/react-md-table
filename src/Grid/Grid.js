@@ -6,6 +6,7 @@ import update from 'immutability-helper';
 import IndexColFormatter from './IndexColFormatter';
 import LongTextFormatter from './LongTextFormatter';
 import GridContextMenu from './GridContextMenu';
+import StyleHeaderRenderer from './StyleHeaderRenderer';
 import { saveGridState, loadGridState } from '../Storage';
 
 
@@ -112,20 +113,40 @@ export default class Grid extends Component {
     this.setState({ rows: newData });
   }
 
+  handleColumnStylesChange = (key, style) => {
+    const columns = this.state.columns.slice();
+    const idx = columns.findIndex(element => { return element.key === key; });
+    if (idx <= 0) return;
+
+    let column = columns[idx];
+    column = this.getColumnObject(idx, key, style);
+    // column.name = '';
+    // column.style = style;
+    // column.headerRenderer = this.getStyleHeaderRenderer();
+    columns.splice(idx, 1, column);
+    this.setState({ columns });
+  }
+
   /* Col object */
-  getColumnObject(i) {
+  getStyleHeaderRenderer = () => <StyleHeaderRenderer onChange={this.handleColumnStylesChange} />;
+
+  getColumnObject(i, key = null, style = null) {
     if (i === 0 ) return {
       key: 'ID', name: '', width: 50, locked: true, cellClass: 'no-outline',
       editable: false, formatter: IndexColFormatter
     };
 
+    key = key ? key : 'col' + i.toString();
+    style = style ? style : 'l';
     return {
-      key: 'col' + i.toString(),
+      key,
       name:  String.fromCharCode(97 + i - 1).toUpperCase(),
       width: 150,
       editable: false,
       formatter: LongTextFormatter,
-      events: {  onDoubleClick: this.handleCellEditAction, onKeyDown: this.handleCellKeydown }
+      events: {  onDoubleClick: this.handleCellEditAction, onKeyDown: this.handleCellKeydown },
+      headerRenderer: this.getStyleHeaderRenderer(),
+      style
     };
   }
 
@@ -169,19 +190,21 @@ export default class Grid extends Component {
 
   /* Reset table rows by button */
   clearTable() {
-    const { rowSize } = this.props;
-    let rows = this.clearRows(rowSize);
-    this.setState({ rows });
+    const { rowSize, colSize } = this.props;
+    // let rows = this.clearRows(rowSize);
+    // this.setState({ rows });
+    this.updateGrid(rowSize, colSize);
   }
 
 
   /* Non header rows */
-  getTableRows() {
+  getTableRows(onFinish) {
     const { rows, columns } = this.state;
 
-    let keys = [], table = [];
+    let keys = [], table = [], styles = [];
     for(let col = 1; col < columns.length; col++) {
       keys.push(columns[col].key);
+      styles.push(columns[col].style);
     }
 
     for(let row = 0; row < rows.length; row++) {
@@ -193,7 +216,7 @@ export default class Grid extends Component {
       table.push(tableRow);
     }
 
-    return table;
+    if (onFinish) onFinish(table, styles);
   }
 
 
@@ -205,6 +228,7 @@ export default class Grid extends Component {
       columns[i].name = String.fromCharCode(97 + i - 1).toUpperCase();
       columns[i].formatter = LongTextFormatter;
       columns[i].events = {  onDoubleClick: this.handleCellEditAction, onKeyDown: this.handleCellKeydown };
+      columns[i].headerRenderer = this.getStyleHeaderRenderer();
       //columns[i] = this.getColumnObject(i);
     }
     return columns;
@@ -213,7 +237,7 @@ export default class Grid extends Component {
   replaceRowHeaders(rows) {
     for (let i = 0; i < rows.length; i++) {
       rows[i].ID = i + 1;
-      rows[i].className = 'react-grid-HeaderCell';
+      // rows[i].className = 'react-grid-HeaderCell';
     }
     return rows;
   }

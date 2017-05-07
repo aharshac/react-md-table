@@ -117,9 +117,10 @@ export default class App extends Component {
   }
 
   generateMarkdown() {
-    const table = this.grid.getTableRows();
-    const md = MdTable(table);
-    this.setState({ result: md });
+    this.grid.getTableRows((table, align) => {
+      const md = MdTable(table, { align });
+      this.setState({ result: md });
+    });
   }
 
   getHtmlOutput(result) {
