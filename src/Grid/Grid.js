@@ -136,7 +136,7 @@ export default class Grid extends Component {
     for (let i = 1; i < colSize + 1; i++) {
       columns.push(this.getColumnObject(i));
     }
-    columns = this.replaceColumnHeaders(columns);
+    //columns = this.replaceColumnHeaders(columns);
     this.setState({ rows, columns });
   }
 
@@ -147,7 +147,7 @@ export default class Grid extends Component {
     for (let i = 1; i < colSize + 1; i++) {
       columns.push(this.getColumnObject(i));
     }
-    columns = this.replaceColumnHeaders(columns);
+    //columns = this.replaceColumnHeaders(columns);
     for(let row = 0; row < rows.length; row++) {
       for(let col = 1; col < columns.length; col++) {
         const key = columns[col].key;
@@ -202,7 +202,10 @@ export default class Grid extends Component {
   replaceColumnHeaders(columns) {
     columns[0] = this.getColumnObject(0);
     for (let i = 1; i < columns.length; i++) {
-      columns[i] = this.getColumnObject(i);
+      columns[i].name = String.fromCharCode(97 + i - 1).toUpperCase();
+      columns[i].formatter = LongTextFormatter;
+      columns[i].events = {  onDoubleClick: this.handleCellEditAction, onKeyDown: this.handleCellKeydown };
+      //columns[i] = this.getColumnObject(i);
     }
     return columns;
   }
@@ -288,9 +291,9 @@ export default class Grid extends Component {
       return;
     }
     const lastColKey = ++this.state.lastColKey;
-    const key = lastColKey.toString();
+    //const key = lastColKey.toString();
 
-    const newCol = { key: 'col' + key, name: key, width: null, editable: true };
+    const newCol = this.getColumnObject(lastColKey);
 
     let columns = [...this.state.columns];
     columns.splice(colIdx, 0, newCol);

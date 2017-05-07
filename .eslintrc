@@ -10,5 +10,8 @@
   },
   "env": {
     "es6": true
+  },
+  "rules": {
+    "linebreak-style": "off"
   }
 }
