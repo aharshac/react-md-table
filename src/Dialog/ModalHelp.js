@@ -43,6 +43,11 @@ export default class ModalHelp extends Component {
               </li>
 
               <li>
+                <b>State Persistence</b>
+                <p>Saves table size, import markdown and input grid state in the browser's LocalStorage.</p>
+              </li>
+
+              <li>
                 <b>Column Text Align</b>
                 <p>Set the text alignment to left (default), center and right for each column in the input grid.</p>
               </li>
