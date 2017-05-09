@@ -16,11 +16,11 @@ tableToArray(table, (error, styles, cells, rowSize, colSize) => {
 
 function parseStyles(line) {
   if (/^--*[ \t]*:[ \t]*$/.test(line)) {
-    return 1; // right
+    return 'r'; // right
   } else if (/^:[ \t]*--*[ \t]*:$/.test(line)) {
-    return 2; // center
+    return 'c'; // center
   } else {
-    return 0; // left
+    return 'l'; // left
   }
 }
 

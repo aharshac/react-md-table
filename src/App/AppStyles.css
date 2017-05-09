@@ -1,0 +1,129 @@
+.app {
+  padding: 30px;
+}
+
+.app-header h2{
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  height: 40px;
+}
+
+/* logo */
+.logo-collaborizm, .logo-react {
+  vertical-align: middle;
+  display: inline;
+}
+
+.logo-collaborizm {
+  height: 45px;
+  margin-left: 20px;
+}
+
+.logo-react {
+  height: 50px;
+  animation: logo-react-spin infinite 20s linear;
+}
+
+@keyframes logo-react-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* GitHub shields */
+.github-ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+}
+
+.toolbar {
+  padding: 20px 0 20px 0;
+}
+
+.toolbar-align-right {
+  /*float: right !important;*/
+  margin-left: 40px !important;
+}
+
+/* Popup Textareas */
+.cell-edit, .import-edit {
+  resize: vertical;
+  width: 100%;
+  min-height: 200px;
+}
+
+.help-intro p a {
+  color: inherit;
+  font-weight: 700;
+}
+
+
+
+/* Code block */
+
+.result-container {
+  width: 100%;
+  min-height: 40px;
+  border: 2px solid #bbb;
+  padding: 10px;
+}
+
+pre {
+  border: none !important;
+}
+
+.result-code {
+  font-family: monospace;
+  padding: 5px 0 10px 0 !important;
+  margin-bottom: 0px;
+  line-height: 0;
+  counter-reset: line;
+  background-color: #f6f6f6;
+  color: #555;
+}
+
+.result-code-line {
+  display: block;
+  line-height: 1.5rem;
+  padding-right: 5px;
+}
+
+.result-code-line:before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  border-right: 2px solid #bbb;
+  padding: 0 .5em;
+  margin-right: .5em;
+  color: #888;
+  width: 40px;
+  text-align: right;
+  -webkit-user-select: none;
+}
+
+.result-code > .result-code-line  {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently */
+  cursor: default;
+}
+
+
+
+/* Footer */
+
+footer {
+  padding-top: 30px;
+  text-align: center;
+}
+
+footer a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 700;
+}

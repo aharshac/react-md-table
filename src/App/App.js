@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ButtonToolbar, Button } from 'react-bootstrap';
+import { ButtonToolbar, Button, Glyphicon } from 'react-bootstrap';
 import MdTable from 'markdown-table';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
@@ -9,13 +9,14 @@ import ModalAlert from '../Dialog/ModalAlert';
 import ModalNewTable from '../Dialog/ModalNewTable';
 import ModalImportTable from '../Dialog/ModalImportTable';
 import ModalEditCell from '../Dialog/ModalEditCell';
+import ModalHelp from '../Dialog/ModalHelp';
 import Importer from '../Importer';
 import { saveAppState, loadAppState, clearAppState } from '../Storage';
 
-import logo from './logo.svg';
+import LogoReact from './LogoReact.svg';
+import LogoCollaborizm from './LogoCollaborizm.svg';
 
-import './App.css';
-import './contextMenu.css';
+import './AppStyles.css';
 
 export default class App extends Component {
   static SETTINGS = {
@@ -39,6 +40,7 @@ export default class App extends Component {
       editCellHidden: true,
       clearModalHidden: true,
       alertModalHidden: true,
+      helpModalHidden: true,
     };
 
     this.handleTableNew = this.handleTableNew.bind(this);
@@ -81,6 +83,9 @@ export default class App extends Component {
 
   setAlertModalHidden(alertModalHidden, alert = '') {  this.setState({ alertModalHidden, alert }); }
 
+  setHelpModalHidden = (helpModalHidden) => this.setState({ helpModalHidden });
+
+
   handleTableNew(rowSize, colSize) {
     clearAppState();
     //this.grid.clearTable();
@@ -117,18 +122,19 @@ export default class App extends Component {
   }
 
   generateMarkdown() {
-    const table = this.grid.getTableRows();
-    const md = MdTable(table);
-    this.setState({ result: md });
+    this.grid.getTableRows((table, align) => {
+      const md = MdTable(table, { align });
+      this.setState({ result: md });
+    });
   }
 
   getHtmlOutput(result) {
     if (!result) return null;
     return(
-      <pre className="codePre">
+      <pre className="result-code">
         {
           result.split('\n').map((line, index) => {
-            return <span className="codeSpan" key={index}>{line}</span>;
+            return <span className="result-code-line" key={index}>{line}</span>;
           })
         }
       </pre>
@@ -139,7 +145,7 @@ export default class App extends Component {
     if (!result) return null;
     return(
       <CopyToClipboard text={result} onCopy={() => this.setAlertModalHidden(false, 'Output is copied to the clipboard.')}>
-        <Button bsStyle="default"><b>Copy</b></Button>
+        <Button bsStyle="default"><Glyphicon glyph="copy" /> <b>Copy Output</b></Button>
       </CopyToClipboard>
     );
   }
@@ -147,25 +153,23 @@ export default class App extends Component {
   render() {
     const {
       result, rowSize, colSize,
-      newModalHidden, importModalHidden, editCellHidden, clearModalHidden, alertModalHidden, alert,
+      newModalHidden, importModalHidden, editCellHidden, clearModalHidden, alertModalHidden, alert, helpModalHidden,
       editRow, editCol, editText, importText
     } = this.state;
 
     return (
-      <div className="App">
-        <div className="AppHeader">
+      <div className="app">
+        <div className="app-header">
           <h2>React Markdown Table Generator</h2>
-          <img src={logo} className="AppLogo" alt="logo" />
-        </div>
+          <a href="https://www.collaborizm.com" target="_blank">
+            <img src={LogoCollaborizm} className="logo-collaborizm" alt="logo" />
+          </a>
+          <img src={LogoReact} className="logo-react" alt="logo" />
 
-        <p>
-          <a href="https://www.collaborizm.com" className="shield">
-            <img src="https://img.shields.io/badge/Collaborizm-sign%20up-blue.svg" alt="Collaborizm" />
+          <a href="https://github.com/aharshac/react-md-table" target="_blank">
+            <img className="github-ribbon" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" />
           </a>
-          <a href="https://github.com/aharshac/react-md-table" className="shield">
-            <img src="https://img.shields.io/badge/GitHub-src-orange.svg" alt="Collaborizm" />
-          </a>
-        </p>
+        </div>
 
         <ModalNewTable
           maxRows={App.SETTINGS.maxRows}
@@ -204,10 +208,15 @@ export default class App extends Component {
           hidden={alertModalHidden}
           hideOkButton />
 
+        <ModalHelp
+          onOk={() => this.setHelpModalHidden(true)}
+          hidden={helpModalHidden} />
+
         <ButtonToolbar className="toolbar">
-          <Button bsStyle="primary" onClick={() => this.setNewModalHidden(false)}><b>New Table</b></Button>
-          <Button bsStyle="info" onClick={() => this.setImportModalHidden(false)}><b>Import Table</b></Button>
-          <Button bsStyle="danger" onClick={() => this.setClearModalHidden(false)}><b>Clear Rows</b></Button>
+          <Button bsStyle="primary" onClick={() => this.setNewModalHidden(false)}><Glyphicon glyph="tasks" /> <b>New Table</b></Button>
+          <Button bsStyle="info" onClick={() => this.setImportModalHidden(false)}><Glyphicon glyph="import" /> <b>Import Table</b></Button>
+          <Button bsStyle="danger" onClick={() => this.setClearModalHidden(false)}><Glyphicon glyph="trash" /> <b>Clear Rows</b></Button>
+          <Button bsStyle="warning" onClick={() => this.setHelpModalHidden(false)} className="toolbar-align-right"><Glyphicon glyph="question-sign" /> <b>Help</b></Button>
         </ButtonToolbar>
 
         <div className="grid">
@@ -223,13 +232,20 @@ export default class App extends Component {
         </div>
 
         <ButtonToolbar className="toolbar">
-          <Button bsStyle="success" onClick={this.generateMarkdown}><b>Generate Markdown</b></Button>
+          <Button bsStyle="success" onClick={this.generateMarkdown}><Glyphicon glyph="check" /> <b>Generate Markdown</b></Button>
           { this.getCopyButton(result) }
         </ButtonToolbar>
 
-        <div className="resultContainer">
+        <div className="result-container">
           { this.getHtmlOutput(result) }
         </div>
+
+        <footer>
+          <p>
+            App by <a href="https://www.collaborizm.com/profile/Hyt3y6XK?utm_content=user_link&utm_source=user_Hyt3y6XK" target="_blank">Harsha Alva</a>.
+            Made with <Glyphicon glyph="heart" /> and <a href="https://facebook.github.io/react/" target="_blank">React</a>
+          </p>
+        </footer>
       </div>
     );
   }
