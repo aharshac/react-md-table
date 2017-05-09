@@ -9,6 +9,8 @@ import GridContextMenu from './GridContextMenu';
 import StyleHeaderRenderer from './StyleHeaderRenderer';
 import { saveGridState, loadGridState } from '../Storage';
 
+import './GridStyles.css';
+import './GridContextMenuStyles.css';
 
 export default class Grid extends Component {
   constructor(props) {
@@ -132,7 +134,7 @@ export default class Grid extends Component {
 
   getColumnObject(i, key = null, style = null) {
     if (i === 0 ) return {
-      key: 'ID', name: '', width: 50, locked: true, cellClass: 'no-outline',
+      key: 'ID', name: '', width: 50, locked: true, cellClass: 'col-no-outline',
       editable: false, formatter: IndexColFormatter
     };
 

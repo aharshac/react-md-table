@@ -55,7 +55,7 @@ export default class ModalImportTable extends Component {
         large>
 
         <textarea
-          className="importEdit"
+          className="import-edit"
           onChange={this.handleTextChange}
           value={tempText}
           placeholder="Markdown Table"

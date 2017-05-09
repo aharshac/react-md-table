@@ -63,7 +63,7 @@ export default class ModalEditCell extends Component {
         large>
 
         <textarea
-          className="cellEdit"
+          className="cell-edit"
           onChange={this.handleTextChange}
           value={tempText}
           placeholder="Text"

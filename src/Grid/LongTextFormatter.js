@@ -9,7 +9,7 @@ export default class LongTextFormatter extends Component {
   render() {
     const { value } = this.props;
     return (
-      <div className="longTextCell" >
+      <div className="col-long-text" >
         <span>
           { value }
         </span>

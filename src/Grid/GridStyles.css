@@ -1,0 +1,54 @@
+/* grid */
+.grid {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.header-align-container {
+  position: relative;
+}
+
+.header-align-title{
+  display: inline-block;
+}
+
+.header-align {
+  font-weight: normal;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* Custom cell formatters */
+.col-row-index, .col-long-text span {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently */
+  cursor: default;
+}
+
+/* Index column */
+.col-row-index {
+  font-weight: 700 !important;
+}
+
+.col-no-outline {
+  outline: none !important;
+  background-color: rgb(249, 249, 249);
+}
+
+.col-long-text span {
+  color: #000;
+  font-weight: normal;
+}
+
+.col-long-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 700;
+  color: red;
+}

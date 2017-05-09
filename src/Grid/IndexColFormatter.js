@@ -9,7 +9,7 @@ export default class IndexColFormatter extends Component {
   render() {
     const { value } = this.props;
     return (
-      <div className="rowIndexCell" >
+      <div className="col-row-index" >
         { value }
       </div>
     );

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Glyphicon } from 'react-bootstrap';
 
 export default class ModalHelp extends Component {
   static propTypes = {
@@ -21,12 +21,14 @@ export default class ModalHelp extends Component {
           <Modal.Title>Help</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>
+          <div className="help-intro">
             <h4>Introduction</h4>
-            <p>This React.js app is made for <a href="https://www.Collaborizm.com/" target="_blank"><b>Collaborizm</b></a></p>
-            <p>I made this app as I was tired of writing Markdown for tables by hand for Collaborizm posts.</p>
-            <p>A big shout-out to <a href="https://www.collaborizm.com/profile/21339?utm_content=user_link&utm_source=user_Hyt3y6XK" target="_blank"><b>Robert Lancer</b></a>, the CTO of Collaborizm for inspiring this project.</p>
-            <p>Join my <a href="https://www.collaborizm.com/profile/Hyt3y6XK?utm_content=user_link&utm_source=user_Hyt3y6XK" target="_blank">projects</a> on Collaborizm.</p>
+            <p>This React.js app is made for <a href="https://www.Collaborizm.com/" target="_blank">Collaborizm</a> as I was tired of writing Markdown for tables by hand for posts.</p>
+            <p>A big shout-out to <a href="https://www.collaborizm.com/profile/21339?utm_content=user_link&utm_source=user_Hyt3y6XK" target="_blank">Robert Lancer</a>, the CTO of Collaborizm for inspiring this project.</p>
+            <p>
+              App by <a href="https://www.collaborizm.com/profile/Hyt3y6XK?utm_content=user_link&utm_source=user_Hyt3y6XK" target="_blank">Harsha Alva</a>.
+              Made with <Glyphicon glyph="heart" /> and <a href="https://facebook.github.io/react/" target="_blank">React</a>
+            </p>
 
             <br />
 

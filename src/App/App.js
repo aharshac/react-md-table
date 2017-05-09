@@ -13,10 +13,10 @@ import ModalHelp from '../Dialog/ModalHelp';
 import Importer from '../Importer';
 import { saveAppState, loadAppState, clearAppState } from '../Storage';
 
-import logo from './logo.svg';
+import LogoReact from './LogoReact.svg';
+import LogoCollaborizm from './LogoCollaborizm.svg';
 
-import './App.css';
-import './contextMenu.css';
+import './AppStyles.css';
 
 export default class App extends Component {
   static SETTINGS = {
@@ -131,10 +131,10 @@ export default class App extends Component {
   getHtmlOutput(result) {
     if (!result) return null;
     return(
-      <pre className="codePre">
+      <pre className="result-code">
         {
           result.split('\n').map((line, index) => {
-            return <span className="codeSpan" key={index}>{line}</span>;
+            return <span className="result-code-line" key={index}>{line}</span>;
           })
         }
       </pre>
@@ -158,20 +158,18 @@ export default class App extends Component {
     } = this.state;
 
     return (
-      <div className="App">
-        <div className="AppHeader">
+      <div className="app">
+        <div className="app-header">
           <h2>React Markdown Table Generator</h2>
-          <img src={logo} className="AppLogo" alt="logo" />
-        </div>
+          <a href="https://www.collaborizm.com" target="_blank">
+            <img src={LogoCollaborizm} className="logo-collaborizm" alt="logo" />
+          </a>
+          <img src={LogoReact} className="logo-react" alt="logo" />
 
-        <p>
-          <a href="https://www.collaborizm.com" className="shield" target="_blank">
-            <img src="https://img.shields.io/badge/Collaborizm-sign%20up-blue.svg" alt="Collaborizm" />
+          <a href="https://github.com/aharshac/react-md-table" target="_blank">
+            <img className="github-ribbon" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" />
           </a>
-          <a href="https://github.com/aharshac/react-md-table" className="shield" target="_blank">
-            <img src="https://img.shields.io/badge/GitHub-src-orange.svg" alt="Source Code" />
-          </a>
-        </p>
+        </div>
 
         <ModalNewTable
           maxRows={App.SETTINGS.maxRows}
@@ -218,7 +216,7 @@ export default class App extends Component {
           <Button bsStyle="primary" onClick={() => this.setNewModalHidden(false)}><Glyphicon glyph="tasks" /> <b>New Table</b></Button>
           <Button bsStyle="info" onClick={() => this.setImportModalHidden(false)}><Glyphicon glyph="import" /> <b>Import Table</b></Button>
           <Button bsStyle="danger" onClick={() => this.setClearModalHidden(false)}><Glyphicon glyph="trash" /> <b>Clear Rows</b></Button>
-          <Button bsStyle="warning" onClick={() => this.setHelpModalHidden(false)} className="align-right"><Glyphicon glyph="question-sign" /> <b>Help</b></Button>
+          <Button bsStyle="warning" onClick={() => this.setHelpModalHidden(false)} className="toolbar-align-right"><Glyphicon glyph="question-sign" /> <b>Help</b></Button>
         </ButtonToolbar>
 
         <div className="grid">
@@ -238,9 +236,16 @@ export default class App extends Component {
           { this.getCopyButton(result) }
         </ButtonToolbar>
 
-        <div className="resultContainer">
+        <div className="result-container">
           { this.getHtmlOutput(result) }
         </div>
+
+        <footer>
+          <p>
+            App by <a href="https://www.collaborizm.com/profile/Hyt3y6XK?utm_content=user_link&utm_source=user_Hyt3y6XK" target="_blank">Harsha Alva</a>.
+            Made with <Glyphicon glyph="heart" /> and <a href="https://facebook.github.io/react/" target="_blank">React</a>
+          </p>
+        </footer>
       </div>
     );
   }
