@@ -2,7 +2,12 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  overflow-y: scroll;
+  overflow-y: scroll !important;
   background-color: #f6f6f6;
   color: #555;
+}
+
+/* bottom margin for bootstrap buttons */
+.btn {
+  margin-bottom: 10px;
 }
