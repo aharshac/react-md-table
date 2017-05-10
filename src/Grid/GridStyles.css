@@ -37,7 +37,7 @@
 
 .col-no-outline {
   outline: none !important;
-  background-color: rgb(249, 249, 249);
+  background-color: rgb(249, 249, 249) !important;
 }
 
 .col-long-text span {
