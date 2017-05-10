@@ -1,5 +1,7 @@
 # React Markdown Table Generator
-[![collaborizm](https://img.shields.io/badge/Collaborizm-sign%20up-blue.svg)](https://www.collaborizm.com) [![firebase](https://img.shields.io/badge/Firebase-run-brightgreen.svg)](https://react-md-table.firebaseapp.com/)
+[![collaborizm](https://img.shields.io/badge/Collaborizm-sign%20up-blue.svg)](https://www.collaborizm.com) [![firebase](https://img.shields.io/badge/Firebase-run-brightgreen.svg)](https://mdtable-creator.firebaseapp.com/)
+
+New home: **https://table.collaborizm.com/**
 
 &nbsp;
 
