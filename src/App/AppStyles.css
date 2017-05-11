@@ -38,6 +38,19 @@
   border: 0;
 }
 
+/* Responsive views */
+.large-screen-only {
+  display: block;
+}
+
+.small-screen-only {
+  padding: 60px 60px 30px 60px;
+  text-align: center;
+  font-size: 1.5em;
+  display: none;
+}
+
+
 .toolbar {
   padding: 20px 0 10px 0;
 }
@@ -134,13 +147,22 @@ footer a {
     padding: 20px !important;
   }
 
+  .app-header{
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
   /* hide logos on mobile (width < 768 px) */
   .logo-collaborizm, .logo-react {
     display: none !important;
   }
 
-  .app-header{
-    margin-bottom: 10px;
+  .large-screen-only {
+    display: none !important;
+  }
+
+  .small-screen-only {
+    display: block !important;
   }
 
   .toolbar-align-right {

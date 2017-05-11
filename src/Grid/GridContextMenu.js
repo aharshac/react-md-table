@@ -29,44 +29,19 @@ export default class GridContextMenu extends Component {
     const data = {rowIdx, idx};
     return (
       <ContextMenu>
-
         <MenuItem data={data} onClick={this.props.onCellEdit}> Edit Cell </MenuItem>
 
         <MenuItem divider onClick={() => {}} />
 
         <MenuItem data={data} onClick={this.props.onRowInsertAbove}> Insert Row Above </MenuItem>
-
-        <MenuItem
-          data={data}
-          onClick={this.props.onRowInsertBelow}>
-            Insert Row Below
-        </MenuItem>
-
-        <MenuItem
-          data={data}
-          onClick={this.props.onRowDelete}>
-            Delete Row
-        </MenuItem>
+        <MenuItem data={data} onClick={this.props.onRowInsertBelow}> Insert Row Below </MenuItem>
+        <MenuItem data={data} onClick={this.props.onRowDelete}> Delete Row </MenuItem>
 
         <MenuItem divider onClick={() => {}} />
 
-        <MenuItem
-          data={data}
-          onClick={this.props.onColInsertLeft}>
-            Insert Column Left
-        </MenuItem>
-
-        <MenuItem
-          data={data}
-          onClick={this.props.onColInsertRight}>
-            Insert Column Right
-        </MenuItem>
-
-        <MenuItem
-          data={data}
-          onClick={this.props.onColDelete}>
-            Delete Column
-        </MenuItem>
+        <MenuItem data={data} onClick={this.props.onColInsertLeft}> Insert Column Left </MenuItem>
+        <MenuItem data={data} onClick={this.props.onColInsertRight}> Insert Column Right </MenuItem>
+        <MenuItem data={data} onClick={this.props.onColDelete}> Delete Column </MenuItem>
       </ContextMenu>
     );
   }

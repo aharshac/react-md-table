@@ -11,3 +11,14 @@ body {
 .btn {
   margin-bottom: 10px;
 }
+
+/* grid header fix */
+.react-grid-Header, .react-grid-HeaderCell {
+  background-color: rgb(242, 242, 242) !important;
+  border-bottom: 1px solid #ddd !important;
+}
+
+/* grid bg color fix */
+.react-grid-Canvas {
+  background-color: rgb(249, 249, 249) !important;
+}

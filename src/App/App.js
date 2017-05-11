@@ -212,33 +212,40 @@ export default class App extends Component {
           onOk={() => this.setHelpModalHidden(true)}
           hidden={helpModalHidden} />
 
-        <ButtonToolbar className="toolbar">
-          <Button bsStyle="primary" onClick={() => this.setNewModalHidden(false)}><Glyphicon glyph="tasks" /> <b>New Table</b></Button>
-          <Button bsStyle="info" onClick={() => this.setImportModalHidden(false)}><Glyphicon glyph="import" /> <b>Import Table</b></Button>
-          <Button bsStyle="danger" onClick={() => this.setClearModalHidden(false)}><Glyphicon glyph="trash" /> <b>Clear Rows</b></Button>
-          <Button bsStyle="warning" onClick={() => this.setHelpModalHidden(false)} className="toolbar-align-right"><Glyphicon glyph="question-sign" /> <b>Help</b></Button>
-        </ButtonToolbar>
+        <div className="large-screen-only">
+          <ButtonToolbar className="toolbar">
+            <Button bsStyle="primary" onClick={() => this.setNewModalHidden(false)}><Glyphicon glyph="tasks" /> <b>New Table</b></Button>
+            <Button bsStyle="info" onClick={() => this.setImportModalHidden(false)}><Glyphicon glyph="import" /> <b>Import Table</b></Button>
+            <Button bsStyle="danger" onClick={() => this.setClearModalHidden(false)}><Glyphicon glyph="trash" /> <b>Clear Rows</b></Button>
+            <Button bsStyle="warning" onClick={() => this.setHelpModalHidden(false)} className="toolbar-align-right"><Glyphicon glyph="question-sign" /> <b>Help</b></Button>
+          </ButtonToolbar>
 
-        <div className="grid">
-          <Grid
-            ref={el => this.grid = el}
-            maxRows={App.SETTINGS.maxRows}
-            maxCols={App.SETTINGS.maxCols}
-            rowSize={rowSize}
-            colSize={colSize}
-            onLimitCrossed={() => this.setAlertModalHidden(false, 'Limit reached.')}
-            onCellEditAction={this.handleCellEdit}
-          />
+          <div className="grid">
+            <Grid
+              ref={el => this.grid = el}
+              maxRows={App.SETTINGS.maxRows}
+              maxCols={App.SETTINGS.maxCols}
+              rowSize={rowSize}
+              colSize={colSize}
+              onLimitCrossed={() => this.setAlertModalHidden(false, 'Limit reached.')}
+              onCellEditAction={this.handleCellEdit}
+            />
+          </div>
+
+          <ButtonToolbar className="toolbar">
+            <Button bsStyle="success" onClick={this.generateMarkdown}><Glyphicon glyph="check" /> <b>Generate Markdown</b></Button>
+            { this.getCopyButton(result) }
+          </ButtonToolbar>
+
+          <div className="result-container">
+            { this.getHtmlOutput(result) }
+          </div>
         </div>
 
-        <ButtonToolbar className="toolbar">
-          <Button bsStyle="success" onClick={this.generateMarkdown}><Glyphicon glyph="check" /> <b>Generate Markdown</b></Button>
-          { this.getCopyButton(result) }
-        </ButtonToolbar>
-
-        <div className="result-container">
-          { this.getHtmlOutput(result) }
+        <div className="small-screen-only">
+          Screen size not supported
         </div>
+
 
         <footer>
           <p>
