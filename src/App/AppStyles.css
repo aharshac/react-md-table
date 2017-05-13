@@ -41,6 +41,7 @@
 /* Responsive views */
 .large-screen-only {
   display: block;
+  width: 100%;
 }
 
 .small-screen-only {
@@ -52,8 +53,15 @@
 
 
 .toolbar {
-  padding: 20px 0 10px 0;
+  padding: 20px 0 20px 0;
 }
+
+/* bottom margin for bootstrap buttons */
+/*
+.toolbar > .btn {
+  margin-bottom: 10px;
+}
+*/
 
 .toolbar-align-right {
   /*float: right !important;*/
