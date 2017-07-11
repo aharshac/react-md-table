@@ -42,26 +42,13 @@ export default class App extends Component {
       alertModalHidden: true,
       helpModalHidden: true,
     };
-
-    this.handleTableNew = this.handleTableNew.bind(this);
-    this.handleTableImport = this.handleTableImport.bind(this);
-    this.handleCellEdit = this.handleCellEdit.bind(this);
-    this.handleCellEditDone = this.handleCellEditDone.bind(this);
-    this.clearRows = this.clearRows.bind(this);
-    this.generateMarkdown = this.generateMarkdown.bind(this);
-
-    this.setNewModalHidden = this.setNewModalHidden.bind(this);
-    this.setImportModalHidden = this.setImportModalHidden.bind(this);
-    this.setEditCellHidden = this.setEditCellHidden.bind(this);
-    this.setClearModalHidden = this.setClearModalHidden.bind(this);
-    this.setAlertModalHidden = this.setAlertModalHidden.bind(this);
   }
 
   componentDidMount() {
     const appState = loadAppState();
     if (appState) {
       const { rowSize, colSize, importText } = appState;
-      if (rowSize && rowSize) {
+      if (rowSize && colSize) {
         this.setState({ rowSize, colSize, importText });
         return;
       }
@@ -73,20 +60,20 @@ export default class App extends Component {
     saveAppState({ rowSize, colSize, importText });
   }
 
-  setNewModalHidden(newModalHidden = true) { this.setState({ newModalHidden }); }
+  setNewModalHidden = (newModalHidden = true) => this.setState({ newModalHidden });
 
-  setImportModalHidden(importModalHidden = true) { this.setState({ importModalHidden }); }
+  setImportModalHidden = (importModalHidden = true) => this.setState({ importModalHidden });
 
-  setEditCellHidden(editCellHidden = true) { this.setState({ editCellHidden }); }
+  setEditCellHidden = (editCellHidden = true) => this.setState({ editCellHidden });
 
-  setClearModalHidden(clearModalHidden = true) { this.setState({ clearModalHidden }); }
+  setClearModalHidden = (clearModalHidden = true) => this.setState({ clearModalHidden });
 
-  setAlertModalHidden(alertModalHidden, alert = '') {  this.setState({ alertModalHidden, alert }); }
+  setAlertModalHidden = (alertModalHidden, alert = '') => this.setState({ alertModalHidden, alert });
 
   setHelpModalHidden = (helpModalHidden) => this.setState({ helpModalHidden });
 
 
-  handleTableNew(rowSize, colSize) {
+  handleTableNew = (rowSize, colSize) => {
     clearAppState();
     //this.grid.clearTable();
     rowSize = parseInt(rowSize, 10);
@@ -95,7 +82,7 @@ export default class App extends Component {
     this.setState({ result: '', rowSize, colSize, newModalHidden: true });
   }
 
-  handleTableImport(text) {
+  handleTableImport = (text) => {
     const data = Importer.tableToArray(text);
     if (!data) {
       this.setState({ importText: text, importModalHidden: true, alertModalHidden: false, alert: 'Could not import invalid table.' });
@@ -107,28 +94,28 @@ export default class App extends Component {
     }
   }
 
-  handleCellEdit(row, column, text) {
+  handleCellEdit = (row, column, text) => {
     this.setState({ editRow: parseInt(row, 10), editCol: parseInt(column, 10), editText: text, editCellHidden: false });
   }
 
-  handleCellEditDone(row, column, text) {
+  handleCellEditDone = (row, column, text) => {
     this.grid.updateEditedCell(row, column, text);
     this.setState({ editRow: null, editCol: null, editText: '', editCellHidden: true });
   }
 
-  clearRows() {
+  clearRows = () => {
     this.grid.clearTable();
     this.setState({ result: '', clearModalHidden: true });
   }
 
-  generateMarkdown() {
+  generateMarkdown = () => {
     this.grid.getTableRows((table, align) => {
       const md = MdTable(table, { align });
       this.setState({ result: md });
     });
   }
 
-  getHtmlOutput(result) {
+  getHtmlOutput = (result) => {
     if (!result) return null;
     return(
       <pre className="result-code">
@@ -141,7 +128,7 @@ export default class App extends Component {
     );
   }
 
-  getCopyButton(result) {
+  getCopyButton = (result) => {
     if (!result) return null;
     return(
       <CopyToClipboard text={result} onCopy={() => this.setAlertModalHidden(false, 'Output is copied to the clipboard.')}>
@@ -160,7 +147,7 @@ export default class App extends Component {
     return (
       <div className="app">
         <div className="app-header">
-          <h2>React Markdown Table Generator</h2>
+          <h2>Collaborizm Markdown Table Generator</h2>
           <a href="https://www.collaborizm.com" target="_blank">
             <img src={LogoCollaborizm} className="logo-collaborizm" alt="logo" />
           </a>
